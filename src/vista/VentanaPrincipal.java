@@ -33,7 +33,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
     private final String[] rutas;
     private TitledBorder titulo;
-    private final JLabel jug1, jug2, resuelto, imagen, letrasUsadas;
+    private final JLabel jug1, jug2, resuelto, imagen, letrasUsadas, cartelLetrasUsadas;
     private JTextField letra;
     private final JPasswordField palabra;
     private final JPanel panel1, panel2, jugador1, jugador2, botonesJug1, principal;
@@ -51,13 +51,14 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
 
         intentos = 0;
         resuelto = new JLabel();
-        letrasUsadas = new JLabel("LETRAS USADAS: ");
+        letrasUsadas = new JLabel("");
+        cartelLetrasUsadas = new JLabel("LETRAS USADAS: ");
 
         //Inicializar paneles
         panel1 = new JPanel(new BorderLayout());
         panel2 = new JPanel(new GridLayout(2, 1)); //dos filas, una para cada jugador
         jugador1 = new JPanel(new GridLayout(3, 0, 10, 10));  //tres filas para los diferentes elementos
-        jugador2 = new JPanel(new GridLayout(5, 0, 10, 10)); //tres filas para los diferentes elementos
+        jugador2 = new JPanel(new GridLayout(6, 0, 10, 10)); //tres filas para los diferentes elementos
         botonesJug1 = new JPanel(new GridLayout(0, 2));
         principal = new JPanel(new GridLayout(1, 2)); //dos columnas, una para cada panel
 
@@ -124,6 +125,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         jugador2.add(letra);
         jugador2.add(jug2Button);
         jugador2.add(resuelto);
+        jugador2.add(cartelLetrasUsadas);
         jugador2.add(letrasUsadas);
 
         //Deshabilitar elementos jugador2
@@ -190,37 +192,41 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         }
 
         if (e.getSource() == jug2Button) {
-            Boolean acierto = false;
-            //Trasformar la letra introducida en un caracter en minúscula
-            char letraEscrita = Character.toLowerCase(letra.getText().charAt(0));
+            if(letra.getText().length() > 0){
+                Boolean acierto = false;
+                //Trasformar la letra introducida en un caracter en minúscula
+                char letraEscrita = Character.toLowerCase(letra.getText().charAt(0));
 
-            //Si la letra introducida esta en la palabra a adivinar guárdala en adivinado
-            for (i = 0; i < adivinar.length; i++) {
-                if (letraEscrita == adivinar[i]) {
-                    adivinado[i] = adivinar[i];
-                    acierto = true;
+                //Si la letra introducida esta en la palabra a adivinar guárdala en adivinado
+                for (i = 0; i < adivinar.length; i++) {
+                    if (letraEscrita == adivinar[i]) {
+                        adivinado[i] = adivinar[i];
+                        acierto = true;
+                    }
                 }
+
+                //Setear el JLabel resultado introduciendo espacios en el array de carácteres para conservar el formato visual
+                resuelto.setText(String.valueOf(adivinado).replaceAll("", " "));
+
+                //si ha fallado se cuenta el intento y se cambia la imagen
+                if (!acierto) {
+                    intentos++;
+                    if(!letrasUsadas.getText().contains(String.valueOf(letra.getText()).toUpperCase())){
+                        letrasUsadas.setText(letrasUsadas.getText() + " " + letra.getText().toUpperCase() + " |");
+                    }
+                    imagen.setIcon(ahorcado[intentos]);
+                    //Si ha agotado los intentos, termina
+                    if (intentos == 5) {
+                        terminar("HAS AGOTADO LOS 5 INTENTOS, HAS PERDIDO :(.\nLA PALABRA ERA: " + String.valueOf(adivinar).toUpperCase());
+                    }
+                } else {
+                    //Si ha terminado de rellenar la palabra y coincide, ha ganado
+                    if (String.valueOf(adivinado).equals(String.valueOf(adivinar))) {
+                        terminar("¡ENHORABUENA, HAS ACERTADO!");
+                    }
+                }
+                letra.setText("");
             }
-
-            //Setear el JLabel resultado introduciendo espacios en el array de carácteres para conservar el formato visual
-            resuelto.setText(String.valueOf(adivinado).replaceAll("", " "));
-
-            //si ha fallado se cuenta el intento y se cambia la imagen
-            if (!acierto) {
-                intentos++;
-                letrasUsadas.setText(letrasUsadas.getText() + " " + letra.getText().toUpperCase() + " |");
-                imagen.setIcon(ahorcado[intentos]);
-                //Si ha agotado los intentos, termina
-                if (intentos == 5) {
-                    terminar("HAS AGOTADO LOS 5 INTENTOS, HAS PERDIDO :(.\nLA PALABRA ERA: " + String.valueOf(adivinar).toUpperCase());
-                }
-            } else {
-                //Si ha terminado de rellenar la palabra y coincide, ha ganado
-                if (String.valueOf(adivinado).equals(String.valueOf(adivinar))) {
-                    terminar("¡ENHORABUENA, HAS ACERTADO!");
-                }
-            }
-            letra.setText("");
         }
     }
 
@@ -236,7 +242,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         imagen.setIcon(ahorcado[intentos]);
         resuelto.setText("");
         palabra.setText("");
-        letrasUsadas.setText("LETRAS USADAS: ");
+        letrasUsadas.setText("");
         cambiar(2, false);
         cambiar(1, true);
     }
