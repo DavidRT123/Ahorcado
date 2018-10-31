@@ -36,7 +36,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
     private final JLabel jug1, jug2, resuelto, imagen, letrasUsadas, cartelLetrasUsadas;
     private JTextField letra;
     private final JPasswordField palabra;
-    private final JPanel panel1, panel2, jugador1, jugador2, botonesJug1, principal;
+    private final JPanel panel1, panel2, jugador1, jugador2, botonesJug1, principal, panelLetrasUsadas;
     private final JButton jug1Button, generarPalabra, jug2Button;
     private final ImageIcon[] ahorcado;
     private int intentos;
@@ -58,8 +58,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         panel1 = new JPanel(new BorderLayout());
         panel2 = new JPanel(new GridLayout(2, 1)); //dos filas, una para cada jugador
         jugador1 = new JPanel(new GridLayout(3, 0, 10, 10));  //tres filas para los diferentes elementos
-        jugador2 = new JPanel(new GridLayout(6, 0, 10, 10)); //tres filas para los diferentes elementos
+        jugador2 = new JPanel(new GridLayout(5, 0, 10, 10)); //tres filas para los diferentes elementos
         botonesJug1 = new JPanel(new GridLayout(0, 2));
+        panelLetrasUsadas = new JPanel(new GridLayout(1, 2));
         principal = new JPanel(new GridLayout(1, 2)); //dos columnas, una para cada panel
 
         //Añadir panel donde se añadirán el resto a la ventana
@@ -125,8 +126,9 @@ public class VentanaPrincipal extends JFrame implements ActionListener {
         jugador2.add(letra);
         jugador2.add(jug2Button);
         jugador2.add(resuelto);
-        jugador2.add(cartelLetrasUsadas);
-        jugador2.add(letrasUsadas);
+        panelLetrasUsadas.add(cartelLetrasUsadas);
+        panelLetrasUsadas.add(letrasUsadas);
+        jugador2.add(panelLetrasUsadas);
 
         //Deshabilitar elementos jugador2
         cambiar(2, false);
